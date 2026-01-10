@@ -1,0 +1,22 @@
+Check if browser automation is available via MCP servers and provide guidance on which MCP tools to use.
+
+This tool DOES NOT perform browser actions directly. Instead, it:
+1. Checks if an MCP browser server (Puppeteer/Playwright) is configured and connected
+2. Provides setup instructions if not available
+3. Tells you which MCP tool to use for browser automation
+
+To actually interact with browsers, use the MCP tools directly:
+- puppeteer_navigate - Navigate to a URL
+- puppeteer_screenshot - Take a screenshot
+- puppeteer_click - Click an element
+- puppeteer_type - Type into an input
+- puppeteer_evaluate - Execute JavaScript
+- puppeteer_hover - Hover over an element
+
+Example workflow:
+1. Use this tool to verify MCP browser server is available
+2. Use puppeteer_navigate with url="http://localhost:3000"
+3. Use puppeteer_screenshot to capture the page
+4. Use puppeteer_click with selector="button.submit"
+
+If MCP browser server is not configured, this tool provides setup instructions.

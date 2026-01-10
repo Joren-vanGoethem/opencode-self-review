@@ -11,6 +11,7 @@ import PROMPT_COMPACTION from "./prompt/compaction.txt"
 import PROMPT_EXPLORE from "./prompt/explore.txt"
 import PROMPT_SUMMARY from "./prompt/summary.txt"
 import PROMPT_TITLE from "./prompt/title.txt"
+import PROMPT_REVIEW from "./prompt/review.txt"
 import { PermissionNext } from "@/permission/next"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 
@@ -132,6 +133,31 @@ export namespace Agent {
         prompt: PROMPT_EXPLORE,
         options: {},
         mode: "subagent",
+        native: true,
+      },
+      review: {
+        name: "review",
+        description: `Self-review agent that validates implementations against requirements. Starts applications, interacts with them through browser automation, captures screenshots, and provides comprehensive validation reports. Use this agent when you need to verify that an implementation matches specified requirements, test UI/UX, or validate functionality end-to-end.`,
+        permission: PermissionNext.merge(
+          defaults,
+          PermissionNext.fromConfig({
+            bash: "allow",
+            browser: "allow",
+            app_lifecycle: "allow",
+            read: "allow",
+            grep: "allow",
+            glob: "allow",
+            question: "allow",
+            skill: "allow",
+            external_directory: {
+              [Truncate.DIR]: "allow",
+            },
+          }),
+          user,
+        ),
+        prompt: PROMPT_REVIEW,
+        options: {},
+        mode: "primary",
         native: true,
       },
       compaction: {

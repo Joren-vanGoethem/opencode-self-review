@@ -1,0 +1,46 @@
+Manage application lifecycle for testing and validation. This tool helps you start, stop, monitor, and health-check applications during development and review.
+- list: Show all running applications in this session
+Note: Applications continue running in the background. You can start multiple applications and test interactions between them. Always stop applications when done to prevent resource leaks.
+
+   - Fix issues and restart
+   - get_logs name="app" to see any error messages
+   - start name="app", command="npm start"
+3. Debug startup issues:
+
+   - Test API endpoints
+   - health_check name="api", url="http://localhost:8000/health"
+   - start name="api", command="python app.py", waitFor="Running on"
+2. Start an API server:
+
+   - Proceed with browser testing
+   - health_check name="web-app", url="http://localhost:3000"
+   - start name="web-app", command="npm run dev", waitFor="localhost:3000"
+1. Start a web application:
+Example usage:
+
+- Stop applications when testing is complete
+- Always check logs if startup fails
+- Set appropriate health check URLs for web applications
+- Specify what output indicates the app is ready (e.g., "Server listening on port 3000")
+- Give each application a descriptive name
+Best practices:
+- get_logs: Retrieve recent output from the application
+- health_check: Verify application is responding
+- stop: Gracefully terminate an application
+- start: Launch an application process (dev server, API, etc.)
+Actions available:
+
+4. Restart: stop() → start() with updated command
+3. Debug issues: start() → get_logs() → analyze errors
+2. Monitor health: start() → health_check() → view logs if issues
+1. Start and test: start() → wait for ready → use browser tool → stop()
+Common workflows:
+
+- Stop applications when done to free resources
+- Always start the application before using browser tools to test it
+- Use this tool to manage long-running processes like dev servers, APIs, databases
+- Each application is identified by a unique name within the session
+- Applications run in the background with persistent output capture
+IMPORTANT:
+
+

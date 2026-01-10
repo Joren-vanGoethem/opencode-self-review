@@ -1,5 +1,7 @@
 import { QuestionTool } from "./question"
 import { BashTool } from "./bash"
+import { BrowserTool } from "./browser"
+import { AppLifecycleTool } from "./applifecycle"
 import { EditTool } from "./edit"
 import { GlobTool } from "./glob"
 import { GrepTool } from "./grep"
@@ -95,6 +97,8 @@ export namespace ToolRegistry {
       InvalidTool,
       ...(Flag.OPENCODE_CLIENT === "cli" ? [QuestionTool] : []),
       BashTool,
+      BrowserTool,
+      AppLifecycleTool,
       ReadTool,
       GlobTool,
       GrepTool,
