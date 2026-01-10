@@ -17,6 +17,7 @@ tech stack:
 - tailwind
 - typescript
 - reusable components for common components
+- responsive so it optimizes screen usage on large screen but still works well on mobile devices
 
 Your workflow:
 1. Analyze the requirements provided by the user
