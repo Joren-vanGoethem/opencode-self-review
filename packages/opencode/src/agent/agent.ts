@@ -147,7 +147,11 @@ export namespace Agent {
             read: "allow",
             grep: "allow",
             glob: "allow",
+            list: "allow",
             question: "allow",
+            webfetch: "allow",
+            websearch: "allow",
+            codesearch: "allow",
             skill: "allow",
             external_directory: {
               [Truncate.DIR]: "allow",

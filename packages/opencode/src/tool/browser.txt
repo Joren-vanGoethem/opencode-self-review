@@ -19,4 +19,5 @@ Example workflow:
 3. Use puppeteer_screenshot to capture the page
 4. Use puppeteer_click with selector="button.submit"
 
+If it should be responsive so it also works on mobile you should test multiple screen sizes.
 If MCP browser server is not configured, this tool provides setup instructions.

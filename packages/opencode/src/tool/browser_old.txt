@@ -1,0 +1,48 @@
+Interact with web applications through browser automation. This tool provides comprehensive control over a headless or headed browser instance for testing, validation, and interaction with web applications.
+
+IMPORTANT:
+- Browser state persists across multiple calls within the same session
+- Use this for testing web applications, not for web scraping (use webfetch for that)
+- Screenshots are automatically saved to the truncation directory and can be analyzed
+- Wait for elements to load before interacting to avoid race conditions
+
+Common workflows:
+1. Testing: navigate() → waitFor() → screenshot() → click() → waitFor() → screenshot()
+2. Form filling: navigate() → type() → click() → waitFor() → screenshot()
+3. Visual validation: navigate() → waitFor() → screenshot() → analyze the result
+4. State verification: navigate() → evaluate() → verify returned data
+
+Actions available:
+- navigate: Load a URL in the browser
+- screenshot: Capture the current page or a specific element
+- click: Click on an element by selector
+- type: Type text into an input field
+- waitFor: Wait for an element to appear or a condition to be met
+- evaluate: Execute JavaScript in the page context
+- getContent: Extract text content or HTML from the page
+- close: Close the browser instance
+
+Best practices:
+- Always wait for elements before interacting with them
+- Use descriptive selectors (prefer data-testid over generic class names)
+- Take screenshots before and after important actions
+- Handle errors gracefully (elements may not exist)
+- Close the browser when done to free resources
+
+Example usage:
+1. Start testing a web app:
+   - navigate to http://localhost:3000
+   - waitFor selector="#app"
+   - screenshot to verify initial state
+
+2. Test user interaction:
+   - type into "input[name='username']" with "testuser"
+   - click on "button[type='submit']"
+   - waitFor selector=".success-message"
+   - screenshot to verify success state
+
+3. Validate dynamic content:
+   - evaluate script "document.querySelector('.user-count').textContent"
+   - Compare returned value with expected result
+
+Note: If you need to test multiple scenarios, you can keep the browser open and navigate between pages. Only close when completely done with browser testing.

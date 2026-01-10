@@ -6,19 +6,15 @@ import { MCP } from "../mcp"
 const log = Log.create({ service: "browser-tool" })
 export const BrowserTool = Tool.define("browser", async (_ctx) => {
   return {
-    description: DESCRIPTION + "\n\nNOTE: This tool provides guidance. Use MCP browser tools (puppeteer_* or playwright_*) directly for actual browser automation.",
+    description: DESCRIPTION,
     parameters: z.object({
-      action: z
-        .enum(["navigate", "screenshot", "click", "type", "waitFor", "evaluate", "getContent", "close"])
-        .describe("The browser action to perform"),
-      description: z
-        .string()
-        .describe(
-          "Clear description of what this browser action is testing/validating",
-        ),
+      check: z
+        .boolean()
+        .optional()
+        .default(true)
+        .describe("Check if browser automation is available"),
     }),
     async execute(params: any, _ctx) {
-      const { action, description } = params
       try {
         // Check if we have MCP browser server available
         const mcpServers = await MCP.status()
@@ -30,57 +26,66 @@ export const BrowserTool = Tool.define("browser", async (_ctx) => {
         })
         if (!browserServer) {
           const output = [
-            "Browser automation not available. To use browser tools:",
+            "❌ Browser automation not available.",
+            "",
+            "To enable browser automation:",
             "",
             "1. Install an MCP browser server:",
             "   npm install -g @modelcontextprotocol/server-puppeteer",
-            "   or",
-            "   npm install -g @playwright/mcp-server",
             "",
             "2. Add to your OpenCode config (~/.opencode/config.json):",
-            '   "mcp": {',
-            '     "puppeteer": {',
-            '       "type": "local",',
-            '       "command": "npx",',
-            '       "args": ["-y", "@modelcontextprotocol/server-puppeteer"]',
+            '   {',
+            '     "mcp": {',
+            '       "puppeteer": {',
+            '         "type": "local",',
+            '         "command": "npx",',
+            '         "args": ["-y", "@modelcontextprotocol/server-puppeteer"]',
+            "       }",
             "     }",
             "   }",
             "",
             "3. Restart OpenCode",
             "",
-            "Alternatively, test manually and report results.",
+            "Alternative: Test manually and report results.",
           ].join("\n")
           return {
-            title: "Browser tool not configured",
-            metadata: { action, description } as any,
+            title: "Browser automation not available",
+            metadata: { available: false } as any,
             output,
           }
         }
         const [serverName] = browserServer
-        log.info("MCP browser server available", { server: serverName, action, description })
-        // Provide guidance on which MCP tool to use
-        const mcpToolName = serverName.includes("puppeteer") 
-          ? `puppeteer_${action}` 
-          : action
+        log.info("MCP browser server available", { server: serverName })
+        // List available MCP browser tools
+        const mcpTools = await MCP.tools()
+        const browserTools = Object.keys(mcpTools).filter(
+          (key) => key.startsWith(serverName.replace(/[^a-zA-Z0-9_-]/g, "_"))
+        )
         const output = [
-          `✅ MCP browser server "${serverName}" is connected and ready.`,
+          `✅ Browser automation available via "${serverName}"`,
           "",
-          `To perform "${action}" (${description}):`,
-          `Use the MCP tool: ${mcpToolName}`,
+          "Available MCP tools for browser automation:",
+          ...browserTools.map((tool) => `  - ${tool}`),
           "",
-          "The MCP server provides direct browser automation capabilities.",
-          "All browser actions, screenshots, and results are handled automatically by MCP tools.",
+          "Common tools:",
+          "  - puppeteer_navigate: Navigate to a URL (requires: url)",
+          "  - puppeteer_screenshot: Take a screenshot (optional: name, selector)",
+          "  - puppeteer_click: Click an element (requires: selector)",
+          "  - puppeteer_type: Type into an input (requires: selector, text)",
+          "  - puppeteer_evaluate: Run JavaScript (requires: script)",
+          "",
+          "Use these MCP tools directly for browser automation.",
         ].join("\n")
         return {
-          title: `Use MCP tool: ${mcpToolName}`,
-          metadata: { action, description, mcpServer: serverName, mcpTool: mcpToolName } as any,
+          title: "Browser automation available",
+          metadata: { available: true, server: serverName, tools: browserTools } as any,
           output,
         }
       } catch (error: any) {
-        log.error("browser tool error", { action, error: error.message })
+        log.error("browser tool error", { error: error.message })
         return {
-          title: `Browser ${action} check failed`,
-          metadata: { action, description, error: error.message } as any,
+          title: "Browser check failed",
+          metadata: { available: false, error: error.message } as any,
           output: `Failed to check browser availability: ${error.message}`,
         }
       }
